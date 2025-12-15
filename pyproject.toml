@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reter"
+version = "0.1.0"
+description = "High-performance Description Logic reasoner with C++ RETE engine"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Codeine AI"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+    "reter-core>=0.1.0",
+    "pyarrow>=10.0.0",
+]
+
+[project.optional-dependencies]
+pandas = ["pandas>=1.0.0"]
+dev = ["pytest", "pandas"]
+
+[project.scripts]
+reter = "reter.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/codeine-ai/reter"
+Repository = "https://github.com/codeine-ai/reter"
+
+[tool.setuptools.packages.find]
+where = ["src"]
