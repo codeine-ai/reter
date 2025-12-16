@@ -1,0 +1,59 @@
+name: Test
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  test:
+    name: Test Python ${{ matrix.python }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-15, macos-15-intel]
+        python: ['3.9', '3.10', '3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install reter
+        run: |
+          pip install --upgrade pip
+          pip install . --find-links ./reter_core/
+
+      - name: Run tests
+        run: |
+          python -c "
+          from reter import Reter, get_version_info
+
+          # Check version
+          info = get_version_info()
+          print(f'Python package: {info[\"python_package\"]}')
+          print(f'C++ binding: {info[\"cpp_binding\"][\"version\"]}')
+
+          # Basic reasoning test
+          r = Reter()
+          r.load_ontology('''
+          Person ⊑ᑦ Animal
+          Student ⊑ᑦ Person
+          Person（John）
+          Student（Alice）
+          ''')
+
+          # Query instances
+          people = list(r.instances_of('Person'))
+          animals = list(r.instances_of('Animal'))
+
+          assert len(people) == 2, f'Expected 2 people, got {len(people)}'
+          assert len(animals) == 2, f'Expected 2 animals, got {len(animals)}'
+
+          print(f'People: {[p[\"?x\"] for p in people]}')
+          print(f'Animals: {[a[\"?x\"] for a in animals]}')
+          print('All tests passed!')
+          "
