@@ -49,12 +49,19 @@ print(result.to_pandas())
 
 ## Features
 
-- Fast OWL 2 RL reasoning using C++ RETE algorithm
-- Description Logic parser (C++ implementation)
+- Fast OWL 2 RL reasoning
+- Description Logic parser with Unicode and ASCII syntax
 - SWRL rule support
-- Query interface with Arrow integration
+- Query interface with pandas/Arrow export
 - Source tracking for incremental ontology loading
-- Python, JavaScript, C#, and C++ code analysis
+- Multi-language code analysis (Python, JavaScript, C#, C++)
+
+## Documentation
+
+- [Grammar Reference](docs/01_grammar.md) - Description Logic syntax
+- [API Reference](docs/02_api_reference.md) - Python API documentation
+- [REQL Queries](docs/03_reql.md) - SPARQL-like query language
+- [Syntax Variants](docs/04_syntax_variants.md) - Unicode vs ASCII syntax
 
 ## License
 
