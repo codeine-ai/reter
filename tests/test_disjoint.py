@@ -2,7 +2,7 @@
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rete_cpp'))
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def test_disjoint_classes():
     """Test 1.5: Disjoint Classes - ¬≡ᑦ（Male，Female）"""

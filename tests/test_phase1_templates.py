@@ -7,7 +7,7 @@ Tests: prp-irp, prp-asyp, prp-eqp1/2, prp-pdw, prp-npa1, prp-npa2
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from reter import owl_rete_cpp as owl
+from reter_core import owl_rete_cpp as owl
 
 def test_irreflexive_property():
     """Test prp-irp: Irreflexive Property"""

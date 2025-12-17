@@ -2,7 +2,7 @@
 import pytest
 import sys
 sys.path.insert(0, 'D:/ROOT/reter/rete_cpp')
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def test_subsumption_with_existential():
     """Test if Parent ⊑ᑦ ∃hasChild․Person creates the right facts"""

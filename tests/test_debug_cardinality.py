@@ -1,5 +1,5 @@
 import pytest
-from reter.owl_rete_cpp import ReteNetwork
+from reter_core.owl_rete_cpp import ReteNetwork
 
 def test_debug_max_cardinality():
     net = ReteNetwork()

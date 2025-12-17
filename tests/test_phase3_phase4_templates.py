@@ -8,7 +8,7 @@ Phase 4: cax-dw, cls-com
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from reter import owl_rete_cpp as owl
+from reter_core import owl_rete_cpp as owl
 
 def test_disjoint_with():
     """Test cax-dw: Disjoint With"""

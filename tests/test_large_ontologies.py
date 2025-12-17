@@ -8,7 +8,7 @@ import sys
 import os
 import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 # Mark all tests in this module as slow
 pytestmark = pytest.mark.slow

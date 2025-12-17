@@ -12,7 +12,7 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 
 class TestAIVariantIdentifiers(unittest.TestCase):

@@ -8,7 +8,7 @@ Uses correct query pattern: get_all_facts() + filter
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rete_cpp'))
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def test_class_axioms():
     """Test Class Axioms (Subsumption & Equivalence)"""

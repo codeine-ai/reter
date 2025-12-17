@@ -8,7 +8,7 @@ import pytest
 import os
 import tempfile
 from pathlib import Path
-from reter.owl_rete_cpp import ReteNetwork, Fact
+from reter_core.owl_rete_cpp import ReteNetwork, Fact
 
 
 @pytest.fixture

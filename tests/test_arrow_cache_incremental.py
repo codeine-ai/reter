@@ -51,7 +51,7 @@ def test_cache_incremental_append():
 
     # Add new fact - should set more_facts flag
     print("\n5. Adding new fact (should set more_facts flag)...")
-    from reter.owl_rete_cpp import Fact
+    from reter_core.owl_rete_cpp import Fact
     reasoner.network.add_fact(Fact({
         'type': 'instance_of',
         'individual': 'Rex',
@@ -140,7 +140,7 @@ def test_cache_vs_full_rebuild_performance():
     print("=== Performance: Incremental Append vs. Full Rebuild ===")
     print("="*60 + "\n")
 
-    from reter.owl_rete_cpp import Fact
+    from reter_core.owl_rete_cpp import Fact
 
     # Create reasoner with larger dataset
     print("1. Creating reasoner with larger dataset...")

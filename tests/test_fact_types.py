@@ -6,7 +6,7 @@ Test what fact types are generated for different equivalence statements
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rete_cpp'))
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def test_class_equivalence_facts():
     print("="*80)

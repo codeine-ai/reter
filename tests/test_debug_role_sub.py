@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rete_cpp'))
 
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def test_role_subsumption_fact_type():
     """Check what fact type is created for role subsumption"""

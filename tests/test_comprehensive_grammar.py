@@ -8,8 +8,8 @@ import sys
 import os
 import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rete_cpp'))
-from reter import owl_rete_cpp
-from reter.owl_rete_cpp import ReteNetwork
+from reter_core import owl_rete_cpp
+from reter_core.owl_rete_cpp import ReteNetwork
 
 def test_class_axioms():
     """Test Class Axioms (Subsumption & Equivalence)"""

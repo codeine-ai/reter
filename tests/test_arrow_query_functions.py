@@ -245,7 +245,7 @@ def test_query_cache_invalidation():
     print(f"  Initial query: {count1} facts")
 
     # Add new fact
-    from reter.owl_rete_cpp import Fact
+    from reter_core.owl_rete_cpp import Fact
     reasoner.network.add_fact(Fact({
         'type': 'instance_of',
         'individual': 'Rex',

@@ -2,7 +2,7 @@
 import pytest
 import sys
 sys.path.insert(0, 'D:/ROOT/reter/rete_cpp')
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def test_simple_subsumption_works():
     """Verify simple subsumption works (baseline)"""

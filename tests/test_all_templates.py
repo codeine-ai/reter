@@ -7,7 +7,7 @@ Verifies that each template can be instantiated and produces correct inferences.
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def make_fact(**kwargs):
     """Helper to create a Fact from keyword arguments"""

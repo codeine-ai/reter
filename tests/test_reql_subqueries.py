@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 try:
     from reter.reasoner import Reter
-    from reter.owl_rete_cpp import ReteNetwork
+    from reter_core.owl_rete_cpp import ReteNetwork
     RETER_AVAILABLE = True
 except ImportError:
     RETER_AVAILABLE = False

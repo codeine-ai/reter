@@ -5,7 +5,7 @@ Week 1, Day 1-2 of IMPLEMENTATION_PLAN.md
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rete_cpp'))
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 
 def test_token_class_exists():

@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rete_cpp'))
 
 import time
 import pytest
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 # Mark all tests in this module as slow (performance tests)
 pytestmark = pytest.mark.slow

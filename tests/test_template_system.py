@@ -6,7 +6,7 @@ Test the template rule system by demonstrating symmetric property template.
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def test_symmetric_property_template():
     """

@@ -7,7 +7,7 @@ Tests: cls-maxc1, cls-maxc2, cls-maxqc1, cls-maxqc2, cls-maxqc3, cls-maxqc4
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from reter import owl_rete_cpp as owl
+from reter_core import owl_rete_cpp as owl
 
 def test_max_cardinality_0():
     """Test cls-maxc1: Max Cardinality 0"""

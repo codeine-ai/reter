@@ -2,7 +2,7 @@
 import pytest
 import sys
 sys.path.insert(0, 'D:/ROOT/reter/rete_cpp')
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 def test_alldifferent_parsing():
     """Debug: What facts does AllDifferent create?"""

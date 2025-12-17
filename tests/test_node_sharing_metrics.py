@@ -9,7 +9,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from reter.owl_rete_cpp import ReteNetwork, Fact
+from reter_core.owl_rete_cpp import ReteNetwork, Fact
 
 def make_fact(**kwargs):
     """Helper to create a Fact from keyword arguments"""

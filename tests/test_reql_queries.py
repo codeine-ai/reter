@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import pytest
 from reter import Reter
-from reter.owl_rete_cpp import Fact
+from reter_core.owl_rete_cpp import Fact
 
 
 def test_basic_select():

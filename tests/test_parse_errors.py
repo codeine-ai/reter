@@ -6,7 +6,7 @@ Test if parser reports errors
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rete_cpp'))
-from reter import owl_rete_cpp
+from reter_core import owl_rete_cpp
 
 test_cases = [
     "≡ᑦ（Human，Person，Individual）",

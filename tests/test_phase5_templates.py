@@ -7,7 +7,7 @@ Templates: eq-diff2/3, cax-adc, prp-adp, prp-key
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from reter import owl_rete_cpp as owl
+from reter_core import owl_rete_cpp as owl
 
 def test_alldifferent():
     """Test eq-diff2: AllDifferent"""
