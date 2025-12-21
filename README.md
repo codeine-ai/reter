@@ -63,6 +63,11 @@ print(result.to_pandas())
 - [REQL Queries](docs/03_reql.md) - SPARQL-like query language
 - [Syntax Variants](docs/04_syntax_variants.md) - Unicode vs ASCII syntax
 
+## Tests
+```
+set PYTHONPATH=%CD%\src && python -m pytest tests/ -v --tb=short -m "not slow"
+```
+
 ## License
 
 **reter** (this package) is licensed under the [MIT License](LICENSE).

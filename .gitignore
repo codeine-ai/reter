@@ -1,4 +1,6 @@
 .venv/
+.venv-test/
+.reter/
 build/
 *.egg-info/
 dist/
