@@ -10,7 +10,7 @@ This package provides:
 - Binary serialization for fast loading
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 # Import main reasoner class when package is imported
 from reter.reasoner import Reter, QueryResultSet

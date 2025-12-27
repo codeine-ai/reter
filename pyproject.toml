@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reter"
-version = "0.1.0"
+version = "0.1.1"
 description = "High-performance Description Logic reasoner with C++ RETE engine"
 readme = "README.md"
 license = {text = "MIT"}
