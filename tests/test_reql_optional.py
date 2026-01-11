@@ -583,5 +583,118 @@ name(EmptyClass, 'EmptyClass')
     assert int(empty['?method_count']) == 0, f"EmptyClass method_count should be 0"
 
 
+def test_union_with_group_by_count():
+    """Test UNION combined with GROUP BY and COUNT.
+
+    BUG-002: UNION + GROUP BY + COUNT was returning 0 because the aggregation
+    variable (e.g., ?caller in COUNT(?caller)) was not being included in the
+    patterns sub-query when joining UNION results with whereTriples.
+    """
+    reter = Reter("ai")
+
+    # Load test data: classes and methods that call them
+    reter.load_ontology("""
+Class(ServiceA)
+name(ServiceA, 'ServiceA')
+inFile(ServiceA, 'services.py')
+atLine(ServiceA, '10')
+
+Class(ServiceB)
+name(ServiceB, 'ServiceB')
+inFile(ServiceB, 'services.py')
+atLine(ServiceB, '50')
+
+Method(MethodA)
+name(MethodA, 'helper')
+inFile(MethodA, 'helpers.py')
+atLine(MethodA, '5')
+
+calls(Client1, ServiceA)
+calls(Client2, ServiceA)
+calls(Client3, ServiceA)
+calls(Client4, ServiceB)
+calls(Client5, ServiceB)
+    """, "test.union.groupby.count")
+
+    # Query with UNION + GROUP BY + COUNT
+    # This tests the BUG-002 fix: ?caller must be included in patterns sub-query
+    result = reter.reql("""
+        SELECT ?e ?name (COUNT(?caller) AS ?caller_count)
+        WHERE {
+            { ?e type Class } UNION { ?e type Method }
+            ?e name ?name .
+            ?caller calls ?e
+        }
+        GROUP BY ?e ?name
+        ORDER BY DESC(?caller_count)
+    """)
+
+    # Should return 2 classes (ServiceA with 3 callers, ServiceB with 2 callers)
+    # MethodA has no callers so it's filtered out by the join
+    assert result.num_rows >= 2, f"Expected at least 2 rows, got {result.num_rows}"
+
+    df = result.to_pandas()
+
+    # ServiceA should have 3 callers
+    service_a = df[df['?name'] == 'ServiceA']
+    if len(service_a) > 0:
+        assert int(service_a.iloc[0]['?caller_count']) == 3, \
+            f"ServiceA should have 3 callers, got {service_a.iloc[0]['?caller_count']}"
+
+    # ServiceB should have 2 callers
+    service_b = df[df['?name'] == 'ServiceB']
+    if len(service_b) > 0:
+        assert int(service_b.iloc[0]['?caller_count']) == 2, \
+            f"ServiceB should have 2 callers, got {service_b.iloc[0]['?caller_count']}"
+
+
+def test_union_with_group_by_count_class_only():
+    """Test that COUNT works correctly with UNION even for single type.
+
+    This is a simpler test to verify the basic fix works.
+    """
+    reter = Reter("ai")
+
+    reter.load_ontology("""
+Class(Widget)
+name(Widget, 'Widget')
+calls(UserA, Widget)
+calls(UserB, Widget)
+calls(UserC, Widget)
+    """, "test.union.count.simple")
+
+    # Without UNION - this should work
+    result_no_union = reter.reql("""
+        SELECT ?e ?name (COUNT(?caller) AS ?cnt)
+        WHERE {
+            ?e type Class .
+            ?e name ?name .
+            ?caller calls ?e
+        }
+        GROUP BY ?e ?name
+    """)
+
+    assert result_no_union.num_rows == 1
+    df_no_union = result_no_union.to_pandas()
+    assert int(df_no_union.iloc[0]['?cnt']) == 3, "Without UNION: Widget should have 3 callers"
+
+    # With UNION - this was broken before BUG-002 fix
+    result_with_union = reter.reql("""
+        SELECT ?e ?name (COUNT(?caller) AS ?cnt)
+        WHERE {
+            { ?e type Class }
+            ?e name ?name .
+            ?caller calls ?e
+        }
+        GROUP BY ?e ?name
+    """)
+
+    assert result_with_union.num_rows == 1
+    df_with_union = result_with_union.to_pandas()
+    # BUG-002: This was returning 0 before the fix
+    assert int(df_with_union.iloc[0]['?cnt']) == 3, \
+        f"With UNION: Widget should have 3 callers, got {df_with_union.iloc[0]['?cnt']}"
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
