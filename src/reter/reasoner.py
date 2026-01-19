@@ -767,7 +767,7 @@ class Reter:
             # Now query the extracted facts
             classes = reasoner.pattern(("?x", "type", "py:Class"))
         """
-        # Use new parse_python_code that returns (facts, errors)
+        # Use parse_python_code that returns (facts, errors, registered_methods, unresolved_calls)
         from reter_core import owl_rete_cpp
 
         # Derive module_name from in_file if not provided
@@ -777,7 +777,7 @@ class Reter:
                 module_name = module_name[:-3]
             module_name = module_name.replace("/", ".").replace("\\", ".")
 
-        facts, errors = owl_rete_cpp.parse_python_code(python_code, in_file, module_name)
+        facts, errors, registered_methods, unresolved_calls = owl_rete_cpp.parse_python_code(python_code, in_file, module_name)
 
         # Use source_id if provided, otherwise fall back to in_file
         actual_source_id = source_id if source_id is not None else in_file
@@ -790,6 +790,26 @@ class Reter:
                 actual_source_id  # Use source_id for tracking
             )
             wme_count += 1
+
+        # Register methods for maybeCalls resolution
+        for method in registered_methods:
+            self.network.register_method_for_maybe_calls(
+                method["entity_id"],
+                method["name"],
+                method["param_count"],
+                method["module"],
+                method["class_name"]
+            )
+
+        # Add pending calls for maybeCalls resolution
+        for call in unresolved_calls:
+            self.network.add_pending_call(
+                call["caller_entity_id"],
+                call["method_name"],
+                call["arg_count"],
+                call["caller_module"],
+                call["caller_class"]
+            )
 
         return wme_count, errors
 
