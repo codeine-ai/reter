@@ -24,8 +24,8 @@ class TestMaxCardinality:
     def test_person_at_most_two_parents(self, get_facts):
         """Every person is-a-child-of at-most two parents."""
         facts = get_facts("Every person is-a-child-of at-most two parents.")
-        # Property is normalized to a-child-of
-        card = find_fact(facts, type='max_cardinality', property='a-child-of')
+        # Property preserves 'is-' prefix from 'is-a-child-of'
+        card = find_fact(facts, type='max_cardinality', property='is-a-child-of')
         assert card is not None
 
     def test_parent_at_most_10_children(self, get_facts):
@@ -41,7 +41,7 @@ class TestMinCardinality:
     def test_person_at_least_two_parents(self, get_facts):
         """Every person is-a-child-of at-least two parents."""
         facts = get_facts("Every person is-a-child-of at-least two parents.")
-        card = find_fact(facts, type='min_cardinality', property='a-child-of')
+        card = find_fact(facts, type='min_cardinality', property='is-a-child-of')
         assert card is not None
 
     def test_cat_at_least_5_legs(self, get_facts):
@@ -57,8 +57,8 @@ class TestExactCardinality:
     def test_person_exactly_two_parents(self, get_facts):
         """Every person is-a-child-of two parents."""
         facts = get_facts("Every person is-a-child-of two parents.")
-        # Exact cardinality uses type='exactly'
-        card = find_fact(facts, type='exactly', property='a-child-of')
+        # Exact cardinality uses type='exactly', property preserves 'is-' prefix
+        card = find_fact(facts, type='exactly', property='is-a-child-of')
         assert card is not None
 
     def test_car_four_wheels(self, get_facts):

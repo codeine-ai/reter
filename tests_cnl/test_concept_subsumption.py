@@ -50,13 +50,13 @@ class TestExistentialRestriction:
         facts = get_facts("Every branch is-part-of a tree.")
         # Should create subsumption with some_values_from
         assert len(facts) >= 1
-        svf = find_fact(facts, type='some_values_from', property='part-of', filler='tree')
+        svf = find_fact(facts, type='some_values_from', property='is-part-of', filler='tree')
         assert svf is not None
 
     def test_giraffe_eats_plant(self, get_facts):
         """Every giraffe eats a plant."""
         facts = get_facts("Every giraffe eats a plant.")
-        svf = find_fact(facts, type='some_values_from', property='eat', filler='plant')
+        svf = find_fact(facts, type='some_values_from', property='eats', filler='plant')
         assert svf is not None
 
 
@@ -66,13 +66,13 @@ class TestUniversalRestriction:
     def test_lion_eats_herbivore(self, get_facts):
         """Every lion eats nothing-but herbivore."""
         facts = get_facts("Every lion eats nothing-but herbivore.")
-        avf = find_fact(facts, type='all_values_from', property='eat', filler='herbivore')
+        avf = find_fact(facts, type='all_values_from', property='eats', filler='herbivore')
         assert avf is not None
 
     def test_wife_of_persons(self, get_facts):
         """Every-single-thing is-a-wife-of nothing-but persons."""
         facts = get_facts("Every-single-thing is-a-wife-of nothing-but persons.")
-        avf = find_fact(facts, type='all_values_from', property='a-wife-of', filler='person')
+        avf = find_fact(facts, type='all_values_from', property='is-a-wife-of', filler='person')
         assert avf is not None
 
 

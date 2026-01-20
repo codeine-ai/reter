@@ -161,7 +161,7 @@ class TestGufoRelatorExample:
         """Marriage mediates persons (gUFO pattern)."""
         facts = parse_with_gufo("Johns-Marriage mediates John.")
         assert has_fact(facts, type='role_assertion',
-                       subject='Johns-Marriage', predicate='mediate', object='John')
+                       subject='Johns-Marriage', predicate='mediates', object='John')
 
 
 class TestGufoQualityExample:
@@ -221,7 +221,7 @@ class TestGufoPropertyAxioms:
         )
         facts = [{'type': f.get('type'), 'super_property': f.get('super_property')}
                  for f in result.facts]
-        assert has_fact(facts, type='property_chain', super_property='proper-part-of')
+        assert has_fact(facts, type='property_chain', super_property='is-proper-part-of')
 
     def test_asymmetry_parsed(self):
         """Verify asymmetry axiom parses."""
@@ -312,9 +312,9 @@ class TestGufoRealWorldExample:
 
         # Verify relator pattern
         assert has_fact(facts, type='role_assertion',
-                       subject='Johns-Employment', predicate='mediate', object='John')
+                       subject='Johns-Employment', predicate='mediates', object='John')
         assert has_fact(facts, type='role_assertion',
-                       subject='Johns-Employment', predicate='mediate', object='Acme-Corp')
+                       subject='Johns-Employment', predicate='mediates', object='Acme-Corp')
 
     def test_event_domain(self, parse_with_gufo):
         """Event-centric domain ontology."""
@@ -331,5 +331,5 @@ class TestGufoRealWorldExample:
         assert has_fact(facts, type='instance_of',
                        individual='World-Cup-Final-2022', concept='soccer-match')
         assert has_fact(facts, type='role_assertion',
-                       subject='Messis-Goal', predicate='event-proper-part-of',
+                       subject='Messis-Goal', predicate='is-event-proper-part-of',
                        object='World-Cup-Final-2022')

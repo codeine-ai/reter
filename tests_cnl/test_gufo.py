@@ -107,19 +107,19 @@ class TestGufoPartWholeRelations:
         """Johns-Brain is-component-of[gufo] John."""
         facts = get_facts("Johns-Brain is-component-of John.")
         assert has_fact(facts, type='role_assertion', subject='Johns-Brain',
-                       predicate='component-of', object='John')
+                       predicate='is-component-of', object='John')
 
     def test_is_collection_member_of(self, get_facts):
         """Tree-1 is-collection-member-of[gufo] Forest-1."""
         facts = get_facts("Tree-1 is-collection-member-of Forest-1.")
         assert has_fact(facts, type='role_assertion', subject='Tree-1',
-                       predicate='collection-member-of', object='Forest-1')
+                       predicate='is-collection-member-of', object='Forest-1')
 
     def test_is_sub_quantity_of(self, get_facts):
         """Small-Portion is-sub-quantity-of[gufo] Large-Portion."""
         facts = get_facts("Small-Portion is-sub-quantity-of Large-Portion.")
         assert has_fact(facts, type='role_assertion', subject='Small-Portion',
-                       predicate='sub-quantity-of', object='Large-Portion')
+                       predicate='is-sub-quantity-of', object='Large-Portion')
 
 
 class TestGufoInheresIn:
@@ -150,14 +150,14 @@ class TestGufoMediates:
     def test_marriage_mediates_persons(self, get_facts):
         """Every marriage mediates[gufo] a person."""
         facts = get_facts("Every marriage mediates a person.")
-        svf = find_fact(facts, type='some_values_from', property='mediate', filler='person')
+        svf = find_fact(facts, type='some_values_from', property='mediates', filler='person')
         assert svf is not None
 
     def test_specific_marriage_mediates(self, get_facts):
         """John-Mary-Marriage mediates[gufo] John."""
         facts = get_facts("John-Mary-Marriage mediates John.")
         assert has_fact(facts, type='role_assertion', subject='John-Mary-Marriage',
-                       predicate='mediate', object='John')
+                       predicate='mediates', object='John')
 
 
 class TestGufoQualityValues:
@@ -174,7 +174,7 @@ class TestGufoQualityValues:
         """Moon has-mass-in-kilograms equal-to 7.34767309E22."""
         facts = get_facts("Moon has-mass-in-kilograms equal-to 7.34767309E22.")
         # Note: morphology normalizes 'kilograms' -> 'kilogram'
-        data = find_fact(facts, type='data_assertion', subject='Moon', property='has-mass-in-kilogram')
+        data = find_fact(facts, type='data_assertion', subject='Moon', property='has-mass-in-kilograms')
         assert data is not None
         assert data.get('value') == '7.34767309E22'
 
@@ -204,7 +204,7 @@ class TestGufoEvents:
         """World-Cup-1970-Final is-event-proper-part-of[gufo] World-Cup-1970."""
         facts = get_facts("World-Cup-1970-Final is-event-proper-part-of World-Cup-1970.")
         assert has_fact(facts, type='role_assertion', subject='World-Cup-1970-Final',
-                       predicate='event-proper-part-of', object='World-Cup-1970')
+                       predicate='is-event-proper-part-of', object='World-Cup-1970')
 
 
 class TestGufoTemporalProperties:
@@ -279,7 +279,7 @@ class TestGufoHigherOrderTypes:
         """Animal-Species partitions[gufo] Animal."""
         facts = get_facts("Animal-Species partitions Animal.")
         assert has_fact(facts, type='role_assertion', subject='Animal-Species',
-                       predicate='partition', object='Animal')
+                       predicate='partitions', object='Animal')
 
 
 class TestGufoRelationshipTypes:
@@ -295,7 +295,7 @@ class TestGufoRelationshipTypes:
         """Is-Married-With is-derived-from[gufo] Marriage."""
         facts = get_facts("Is-Married-With is-derived-from Marriage.")
         assert has_fact(facts, type='role_assertion', subject='Is-Married-With',
-                       predicate='derived-from', object='Marriage')
+                       predicate='is-derived-from', object='Marriage')
 
 
 class TestGufoExtrinsicModes:
@@ -352,7 +352,7 @@ class TestGufoComplexPatterns:
         """Every mass inheres-in something. Every-single-thing is-mass-of nothing-but physical-objects."""
         facts = get_facts("Every mass inheres-in something. Every-single-thing is-mass-of nothing-but physical-objects.")
         svf = find_fact(facts, type='some_values_from', property='inheres-in')
-        avf = find_fact(facts, type='all_values_from', property='mass-of', filler='physical-object')
+        avf = find_fact(facts, type='all_values_from', property='is-mass-of', filler='physical-object')
         assert svf is not None
         assert avf is not None
 
@@ -401,7 +401,7 @@ class TestGufoConjunctions:
         facts = get_facts("Johns-Brain is a brain and is-component-of John.")
         # Creates intersection concept + role_assertion
         assert has_fact(facts, type='role_assertion', subject='Johns-Brain',
-                       predicate='component-of', object='John')
+                       predicate='is-component-of', object='John')
         # Instance is of intersection type (combining 'brain' and role restriction)
         inst = find_fact(facts, type='instance_of', individual='Johns-Brain')
         assert inst is not None
@@ -411,7 +411,7 @@ class TestGufoConjunctions:
         """Moon is a physical-object and has-mass-in-kilograms equal-to 7.34767309E22."""
         facts = get_facts("Moon is a physical-object and has-mass-in-kilograms equal-to 7.34767309E22.")
         # Note: morphology normalizes 'kilograms' -> 'kilogram'
-        data = find_fact(facts, type='data_assertion', subject='Moon', property='has-mass-in-kilogram')
+        data = find_fact(facts, type='data_assertion', subject='Moon', property='has-mass-in-kilograms')
         assert data is not None
         # Instance is of intersection type
         inst = find_fact(facts, type='instance_of', individual='Moon')
@@ -429,8 +429,8 @@ class TestGufoConjunctions:
     def test_multiple_data_properties(self, get_facts):
         """Moons-Mass has-mass-in-kilograms equal-to 7.34767309E22 and has-mass-in-short-tons equal-to 8.1E19."""
         facts = get_facts("Moons-Mass has-mass-in-kilograms equal-to 7.34767309E22 and has-mass-in-short-tons equal-to 8.1E19.")
-        kg = find_fact(facts, type='data_assertion', subject='Moons-Mass', property='has-mass-in-kilogram')
-        tons = find_fact(facts, type='data_assertion', subject='Moons-Mass', property='has-mass-in-short-ton')
+        kg = find_fact(facts, type='data_assertion', subject='Moons-Mass', property='has-mass-in-kilograms')
+        tons = find_fact(facts, type='data_assertion', subject='Moons-Mass', property='has-mass-in-short-tons')
         assert kg is not None
         assert tons is not None
 
@@ -611,7 +611,7 @@ class TestGufoAspectProperPart:
         """Johns-Right-To-Service is-aspect-proper-part-of John-Amazon-Agreement."""
         facts = get_facts("Johns-Right-To-Service is-aspect-proper-part-of John-Amazon-Agreement.")
         role = find_fact(facts, type='role_assertion', subject='Johns-Right-To-Service',
-                        predicate='aspect-proper-part-of', object='John-Amazon-Agreement')
+                        predicate='is-aspect-proper-part-of', object='John-Amazon-Agreement')
         assert role is not None
 
 

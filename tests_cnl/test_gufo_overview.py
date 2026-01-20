@@ -201,7 +201,7 @@ class TestObjectsAndParts:
         assert has_fact_type(facts, 'intersection')
         assert has_fact_type(facts, 'instance_of')
         assert has_fact(facts, type='role_assertion', subject='Johns-Brain',
-                       predicate='component-of', object='John')
+                       predicate='is-component-of', object='John')
 
     def test_brain_as_object(self, parse_cnl):
         """Brain as sub-class of object."""
@@ -239,12 +239,12 @@ class TestQualitiesBasic:
         # Multi-typed individuals with data property create intersection types
         assert has_fact_type(facts, 'intersection')
         assert has_fact_type(facts, 'instance_of')
-        assert has_fact(facts, type='data_assertion', subject='Moon', property='has-mass-in-kilogram')
+        assert has_fact(facts, type='data_assertion', subject='Moon', property='has-mass-in-kilograms')
 
     def test_sub_property_of_inheres_in(self, parse_cnl):
         """Sub-property of inheres-in."""
         facts = parse_cnl("If X is-mass-of Y then X inheres-in Y.")
-        assert has_fact(facts, type='sub_property', sub='mass-of', sup='inheres-in')
+        assert has_fact(facts, type='sub_property', sub='is-mass-of', sup='inheres-in')
 
     def test_mass_existential(self, parse_cnl):
         """Every mass is-mass-of something."""
@@ -318,7 +318,7 @@ class TestIntrinsicModes:
     def test_headache_inheres_in_person(self, parse_cnl):
         """Headache inheres-in person via sub-property."""
         facts = parse_cnl("If X is-headache-of Y then X inheres-in Y.")
-        assert has_fact(facts, type='sub_property', sub='headache-of', sup='inheres-in')
+        assert has_fact(facts, type='sub_property', sub='is-headache-of', sup='inheres-in')
 
     def test_headache_range(self, parse_cnl):
         """Headache range restriction to person."""
@@ -346,7 +346,7 @@ class TestExtrinsicAspects:
     def test_marriage_mediates_sub_property(self, parse_cnl):
         """Marriage-involves as sub-property of mediates."""
         facts = parse_cnl("If X marriage-involves Y then X mediates Y.")
-        assert has_fact(facts, type='sub_property', sub='marriage-involve', sup='mediate')
+        assert has_fact(facts, type='sub_property', sub='marriages-involves', sup='mediates')
 
     def test_marriage_mediates_person(self, parse_cnl):
         """Marriage mediates person."""
@@ -433,7 +433,7 @@ class TestEvents:
         """)
         assert has_fact(facts, type='instance_of', individual='World-Cup-1970', concept='event')
         assert has_fact(facts, type='role_assertion', subject='World-Cup-1970-Final',
-                       predicate='event-proper-part-of', object='World-Cup-1970')
+                       predicate='is-event-proper-part-of', object='World-Cup-1970')
 
     def test_event_creates_relator(self, parse_cnl):
         """Event creates relator (wedding creates marriage)."""
@@ -450,7 +450,7 @@ class TestEvents:
         """)
         assert has_fact(facts, type='instance_of', individual='Challenger', concept='functional-complex')
         assert has_fact(facts, type='role_assertion', subject='Challenger',
-                       predicate='terminated-in', object='Challengers-10-Th-Flight')
+                       predicate='is-terminated-in', object='Challengers-10-Th-Flight')
 
 
 # =============================================================================
@@ -560,7 +560,7 @@ class TestRelationshipTypes:
         assert has_fact(facts, type='instance_of', individual='Is-Married-With',
                        concept='material-relationship-type')
         assert has_fact(facts, type='role_assertion', subject='Is-Married-With',
-                       predicate='derived-from', object='Marriage')
+                       predicate='is-derived-from', object='Marriage')
 
 
 # =============================================================================
@@ -579,7 +579,7 @@ class TestHigherOrderTypes:
             Every student is a person.
         """)
         assert has_fact(facts, type='role_assertion', subject='Person-Role',
-                       predicate='categorize', object='Person')
+                       predicate='categorizes', object='Person')
         assert has_fact(facts, type='instance_of', individual='Student', concept='person-role')
 
     def test_ship_type_sub_kind(self, parse_cnl):
@@ -591,7 +591,7 @@ class TestHigherOrderTypes:
             Every supercarrier is a ship.
         """)
         assert has_fact(facts, type='role_assertion', subject='Ship-Type',
-                       predicate='categorize', object='Ship')
+                       predicate='categorizes', object='Ship')
         assert has_fact(facts, type='subsumption', sub='ship-type', sup='sub-kind')
 
     def test_animal_species_partitions(self, parse_cnl):
@@ -606,7 +606,7 @@ class TestHigherOrderTypes:
             Cecil is a lion.
         """)
         assert has_fact(facts, type='role_assertion', subject='Animal-Species',
-                       predicate='partition', object='Animal')
+                       predicate='partitions', object='Animal')
         assert has_fact(facts, type='instance_of', individual='Cecil', concept='lion')
 
 

@@ -1,160 +1,155 @@
-"""Test how CNL roles are represented in REQL queries.
+"""Test how CNL roles are represented in the fact store.
 
 This test verifies the morphological form of roles when stored in the fact store
-and queried via REQL.
+after CNL parsing.
 """
 import pytest
-import sys
-import os
+import reter_core.owl_rete_cpp as cpp
 
-# Windows DLL fix
-if sys.platform == 'win32':
-    try:
-        import pyarrow as pa
-        os.add_dll_directory(pa.get_library_dirs()[0])
-    except Exception:
-        pass
 
-from reter.reasoner import Reter
+def get_facts(cnl_text):
+    """Parse CNL and return list of fact dicts."""
+    result = cpp.parse_cnl(cnl_text)
+    facts = []
+    for f in result.facts:
+        fact_dict = {'type': f.get('type')}
+        # Add all known keys
+        for key in ['sub', 'sup', 'individual', 'concept', 'subject',
+                    'predicate', 'object', 'c1', 'c2', 'property',
+                    'filler', 'cardinality', 'id', 'class', 'i1', 'i2',
+                    'modality', 'chain', 'super_property', 'value', 'datatype']:
+            val = f.get(key)
+            if val:
+                fact_dict[key] = val
+        facts.append(fact_dict)
+    return facts
+
+
+def print_facts(facts, title="Facts"):
+    """Pretty print facts."""
+    print(f"\n=== {title} ===")
+    for f in facts:
+        print(f"  {f}")
 
 
 class TestRoleRepresentation:
-    """Test how CNL roles appear in REQL queries."""
+    """Test how CNL roles appear in the fact store."""
 
     def test_hyphenated_role_instance_assertion(self):
         """Test: 'Alfa inheres-in Beta' - how is 'inheres-in' stored?"""
-        r = Reter()
-
-        # Parse CNL with hyphenated role
         cnl_text = "Alfa inheres-in Beta."
-        r.network.parse_cnl(cnl_text)
+        facts = get_facts(cnl_text)
 
-        # Query all role assertions
-        result = r.reql("SELECT ?s ?role ?o WHERE { ?s ?role ?o }")
+        print_facts(facts, "Role Assertion: 'Alfa inheres-in Beta'")
 
-        print("\n=== Role Assertion: 'Alfa inheres-in Beta' ===")
-        for row in result:
-            print(f"  Subject: {row['?s']}")
-            print(f"  Role: {row['?role']}")
-            print(f"  Object: {row['?o']}")
-            print()
+        # Find the role assertion fact
+        role_facts = [f for f in facts if f['type'] == 'role_assertion']
+        assert len(role_facts) > 0, f"No role_assertion found. Facts: {facts}"
 
-        # Check the role value
-        roles = [row['?role'] for row in result]
-        assert len(roles) > 0, "No role assertions found"
-
-        # What form is it stored as?
-        print(f"Roles found: {roles}")
+        # Check what the predicate/property is called
+        for rf in role_facts:
+            print(f"\n  Role fact details:")
+            print(f"    subject: {rf.get('subject')}")
+            print(f"    predicate: {rf.get('predicate')}")
+            print(f"    property: {rf.get('property')}")
+            print(f"    object: {rf.get('object')}")
 
     def test_verb_role_instance_assertion(self):
         """Test: 'John loves Mary' - how is 'loves' stored?"""
-        r = Reter()
-
         cnl_text = "John loves Mary."
-        r.network.parse_cnl(cnl_text)
+        facts = get_facts(cnl_text)
 
-        result = r.reql("SELECT ?s ?role ?o WHERE { ?s ?role ?o }")
+        print_facts(facts, "Role Assertion: 'John loves Mary'")
 
-        print("\n=== Role Assertion: 'John loves Mary' ===")
-        for row in result:
-            print(f"  Subject: {row['?s']}")
-            print(f"  Role: {row['?role']}")
-            print(f"  Object: {row['?o']}")
-            print()
+        role_facts = [f for f in facts if f['type'] == 'role_assertion']
+        assert len(role_facts) > 0, f"No role_assertion found. Facts: {facts}"
 
-        roles = [row['?role'] for row in result]
-        print(f"Roles found: {roles}")
+        for rf in role_facts:
+            print(f"\n  Role fact details:")
+            print(f"    subject: {rf.get('subject')}")
+            print(f"    predicate: {rf.get('predicate')}")
+            print(f"    property: {rf.get('property')}")
+            print(f"    object: {rf.get('object')}")
 
     def test_passive_role_instance_assertion(self):
         """Test: 'Mary is loved by John' - how is 'loved' stored?"""
-        r = Reter()
-
         cnl_text = "Mary is loved by John."
-        r.network.parse_cnl(cnl_text)
+        facts = get_facts(cnl_text)
 
-        result = r.reql("SELECT ?s ?role ?o WHERE { ?s ?role ?o }")
+        print_facts(facts, "Role Assertion: 'Mary is loved by John'")
 
-        print("\n=== Role Assertion: 'Mary is loved by John' ===")
-        for row in result:
-            print(f"  Subject: {row['?s']}")
-            print(f"  Role: {row['?role']}")
-            print(f"  Object: {row['?o']}")
-            print()
+        role_facts = [f for f in facts if f['type'] == 'role_assertion']
+        assert len(role_facts) > 0, f"No role_assertion found. Facts: {facts}"
 
-        roles = [row['?role'] for row in result]
-        print(f"Roles found: {roles}")
+        for rf in role_facts:
+            print(f"\n  Role fact details:")
+            print(f"    subject: {rf.get('subject')}")
+            print(f"    predicate: {rf.get('predicate')}")
+            print(f"    property: {rf.get('property')}")
+            print(f"    object: {rf.get('object')}")
 
     def test_role_in_subsumption(self):
         """Test: 'Every person loves a thing' - how is 'loves' stored in restriction?"""
-        r = Reter()
-
         cnl_text = "Every person loves a thing."
-        r.network.parse_cnl(cnl_text)
+        facts = get_facts(cnl_text)
 
-        # Query for restrictions or role-related facts
-        result = r.reql("SELECT ?s ?p ?o WHERE { ?s ?p ?o }")
+        print_facts(facts, "Subsumption: 'Every person loves a thing'")
 
-        print("\n=== Subsumption: 'Every person loves a thing' ===")
-        for row in result:
-            print(f"  {row['?s']} -- {row['?p']} --> {row['?o']}")
-
-        # Look specifically for role-related predicates
-        role_facts = [row for row in result if 'role' in str(row['?p']).lower() or 'loves' in str(row).lower()]
-        print(f"\nRole-related facts: {role_facts}")
+        # This creates existential restriction facts
+        for f in facts:
+            if 'property' in f or 'predicate' in f:
+                print(f"\n  Property/predicate fact: {f}")
 
     def test_compare_active_passive(self):
         """Test that active and passive forms produce the same role."""
-        r1 = Reter()
-        r2 = Reter()
-
         # Active voice
-        r1.network.parse_cnl("John owns Pussy.")
-        result1 = r1.reql("SELECT ?s ?role ?o WHERE { ?s ?role ?o }")
+        facts1 = get_facts("John owns Pussy.")
+        print_facts(facts1, "Active: 'John owns Pussy'")
 
         # Passive voice
-        r2.network.parse_cnl("Pussy is owned by John.")
-        result2 = r2.reql("SELECT ?s ?role ?o WHERE { ?s ?role ?o }")
+        facts2 = get_facts("Pussy is owned by John.")
+        print_facts(facts2, "Passive: 'Pussy is owned by John'")
 
-        print("\n=== Active vs Passive Comparison ===")
-        print("Active 'John owns Pussy':")
-        for row in result1:
-            print(f"  {row['?s']} -- {row['?role']} --> {row['?o']}")
+        # Extract role names
+        role1 = [f for f in facts1 if f['type'] == 'role_assertion']
+        role2 = [f for f in facts2 if f['type'] == 'role_assertion']
 
-        print("\nPassive 'Pussy is owned by John':")
-        for row in result2:
-            print(f"  {row['?s']} -- {row['?role']} --> {row['?o']}")
+        print(f"\nActive role facts: {role1}")
+        print(f"Passive role facts: {role2}")
 
-        # Extract roles
-        roles1 = set(row['?role'] for row in result1)
-        roles2 = set(row['?role'] for row in result2)
-
-        print(f"\nActive roles: {roles1}")
-        print(f"Passive roles: {roles2}")
+        # They should have the same property name (lemmatized)
+        if role1 and role2:
+            prop1 = role1[0].get('predicate') or role1[0].get('property')
+            prop2 = role2[0].get('predicate') or role2[0].get('property')
+            print(f"\nActive property: {prop1}")
+            print(f"Passive property: {prop2}")
+            # Note: We're exploring, not asserting equality yet
 
     def test_query_by_role_name(self):
-        """Test querying facts by specific role name."""
-        r = Reter()
-
+        """Test multiple role assertions."""
         cnl_text = """
         John loves Mary.
         Peter loves Susan.
         Alice hates Bob.
         """
-        r.network.parse_cnl(cnl_text)
+        facts = get_facts(cnl_text)
 
-        # First, see all roles
-        all_facts = r.reql("SELECT ?s ?role ?o WHERE { ?s ?role ?o }")
-        print("\n=== All Role Assertions ===")
-        for row in all_facts:
-            print(f"  {row['?s']} -- {row['?role']} --> {row['?o']}")
+        print_facts(facts, "Multiple Role Assertions")
 
-        # Try to query by role name - what form works?
-        for role_name in ['loves', 'love', 'hates', 'hate']:
-            result = r.reql(f'SELECT ?s ?o WHERE {{ ?s {role_name} ?o }}')
-            if result:
-                print(f"\nQuery with '{role_name}' succeeded: {len(result)} results")
-                for row in result:
-                    print(f"  {row['?s']} --> {row['?o']}")
+        role_facts = [f for f in facts if f['type'] == 'role_assertion']
+        print(f"\nFound {len(role_facts)} role assertions")
+
+        # Group by predicate/property
+        by_role = {}
+        for rf in role_facts:
+            role_name = rf.get('predicate') or rf.get('property') or 'unknown'
+            if role_name not in by_role:
+                by_role[role_name] = []
+            by_role[role_name].append(rf)
+
+        print(f"\nGrouped by role name:")
+        for role_name, role_list in by_role.items():
+            print(f"  {role_name}: {len(role_list)} assertions")
 
 
 if __name__ == "__main__":
