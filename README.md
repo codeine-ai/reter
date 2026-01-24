@@ -6,17 +6,17 @@ High-performance Description Logic reasoner with C++ RETE engine.
 
 With uv (no clone needed):
 ```bash
-uv pip install git+https://github.com/codeine-ai/reter.git --find-links https://raw.githubusercontent.com/codeine-ai/reter/main/reter_core/index.html
+uv pip install git+https://github.com/reter-ai/reter.git --find-links https://raw.githubusercontent.com/reter-ai/reter/main/reter_core/index.html
 ```
 
 Or clone and install:
 ```bash
-git clone https://github.com/codeine-ai/reter.git && uv pip install ./reter --find-links ./reter/reter_core/
+git clone https://github.com/reter-ai/reter.git && uv pip install ./reter --find-links ./reter/reter_core/
 ```
 
 With pip:
 ```bash
-git clone https://github.com/codeine-ai/reter.git
+git clone https://github.com/reter-ai/reter.git
 cd reter
 pip install . --find-links ./reter_core/
 ```
@@ -72,4 +72,4 @@ set PYTHONPATH=%CD%\src && python -m pytest tests/ -v --tb=short -m "not slow"
 
 **reter** (this package) is licensed under the [MIT License](LICENSE).
 
-**reter-core** (the C++ engine, distributed as binary wheels) is proprietary software owned by Codeine.AI. It is distributed in binary form only and may only be used as a dependency of the reter package. See [LICENSE](LICENSE) for details.
+**reter-core** (the C++ engine, distributed as binary wheels) is proprietary software owned by Reter Code.AI. It is distributed in binary form only and may only be used as a dependency of the reter package. See [LICENSE](LICENSE) for details.

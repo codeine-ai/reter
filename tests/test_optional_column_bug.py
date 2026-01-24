@@ -105,7 +105,7 @@ name(Person, "Person")
 def test_optional_columns_present_from_snapshot():
     """Test that OPTIONAL columns are preserved when loading from snapshot."""
     import os
-    snapshot_path = 'D:/ROOT/codeine_root/.codeine/.default.reter'
+    snapshot_path = 'D:/ROOT/reter_root/.reter_code/.default.reter'
 
     if not os.path.exists(snapshot_path):
         pytest.skip("Snapshot file not found")

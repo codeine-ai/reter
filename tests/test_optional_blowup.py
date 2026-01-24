@@ -283,7 +283,7 @@ def test_get_architecture_pattern():
     - OPTIONAL: Function in same file
     - OPTIONAL: Module imports
 
-    This is the exact pattern from get_architecture.cadsl that crashes Codeine.
+    This is the exact pattern from get_architecture.cadsl that crashes Reter Code.
     """
     reasoner = Reter("ai")
 

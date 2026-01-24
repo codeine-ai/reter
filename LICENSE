@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 Codeine.AI
+Copyright (c) 2025 Reter.AI
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ SOFTWARE.
 RETER-CORE PROPRIETARY LICENSE
 
 The reter-core package (distributed as binary wheels) is proprietary software
-owned by Codeine.AI. It is distributed in binary form only.
+owned by Reter.AI. It is distributed in binary form only.
 
 The use of reter-core is permitted ONLY as a dependency of the reter package.
 Any other use, including but not limited to:
@@ -33,8 +33,8 @@ Any other use, including but not limited to:
 - Direct use of reter-core independent of reter
 - Reverse engineering, decompilation, or disassembly
 - Redistribution outside of the reter package ecosystem
-- Commercial use without explicit written permission from Codeine.AI
+- Commercial use without explicit written permission from Reter.AI
 
 is strictly prohibited.
 
-For licensing inquiries, contact: license@codeine.ai
+For licensing inquiries, contact: license@reter.ai

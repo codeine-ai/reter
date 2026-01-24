@@ -1,7 +1,7 @@
 """Test to isolate get_architecture.cadsl crash.
 
-This test loads actual Python files (like Codeine does) and runs the
-same query pattern that crashes Codeine's MCP server.
+This test loads actual Python files (like Reter Code does) and runs the
+same query pattern that crashes Reter Code's MCP server.
 """
 import pytest
 import time
@@ -14,11 +14,11 @@ def test_get_architecture_with_real_files():
     """Load real Python files and run get_architecture query pattern."""
     reasoner = Reter("ai")
 
-    # Load some real Python files from the codeine codebase
-    codeine_src = Path("D:/ROOT/codeine_root/codeine/src/codeine")
+    # Load some real Python files from the reter_code codebase
+    reter_code_src = Path("D:/ROOT/reter_root/reter_code/src/reter_code")
 
     files_loaded = 0
-    for py_file in codeine_src.rglob("*.py"):
+    for py_file in reter_code_src.rglob("*.py"):
         if files_loaded >= 50:  # Start with 50 files
             break
         try:
@@ -56,14 +56,14 @@ def test_get_architecture_with_real_files():
 
 
 def test_get_architecture_with_many_files():
-    """Load many real Python files - closer to full Codeine scale."""
+    """Load many real Python files - closer to full Reter Code scale."""
     reasoner = Reter("ai")
 
     # Load Python files from multiple directories
     paths = [
-        Path("D:/ROOT/codeine_root/codeine/src/codeine"),
-        Path("D:/ROOT/codeine_root/reter/src/reter"),
-        Path("D:/ROOT/codeine_root/reter/tests"),
+        Path("D:/ROOT/reter_root/reter_code/src/reter_code"),
+        Path("D:/ROOT/reter_root/reter/src/reter"),
+        Path("D:/ROOT/reter_root/reter/tests"),
     ]
 
     files_loaded = 0
@@ -104,13 +104,13 @@ def test_get_architecture_with_many_files():
 
 
 def test_get_architecture_oo_prefix():
-    """Test with oo: prefix (language-agnostic) like Codeine uses."""
+    """Test with oo: prefix (language-agnostic) like Reter Code uses."""
     reasoner = Reter("ai")
 
     # Load Python files
-    codeine_src = Path("D:/ROOT/codeine_root/codeine/src/codeine")
+    reter_code_src = Path("D:/ROOT/reter_root/reter_code/src/reter_code")
     files_loaded = 0
-    for py_file in codeine_src.rglob("*.py"):
+    for py_file in reter_code_src.rglob("*.py"):
         if files_loaded >= 30:
             break
         try:
@@ -121,7 +121,7 @@ def test_get_architecture_oo_prefix():
 
     print(f"\nLoaded {files_loaded} files")
 
-    # Use oo: prefix like Codeine does after placeholder resolution
+    # Use oo: prefix like Reter Code does after placeholder resolution
     query = """
     SELECT ?file (COUNT(?class) AS ?class_count) (COUNT(?func) AS ?function_count) (COUNT(?import) AS ?import_count)
     WHERE {
@@ -146,11 +146,11 @@ def test_get_architecture_oo_prefix():
 
 
 def test_get_architecture_full_scale():
-    """Full scale test - load ALL files like Codeine does."""
+    """Full scale test - load ALL files like Reter Code does."""
     reasoner = Reter("ai")
 
     # Load from all source directories
-    base = Path("D:/ROOT/codeine_root")
+    base = Path("D:/ROOT/reter_root")
 
     # Python files
     py_count = 0
@@ -195,14 +195,14 @@ def test_get_architecture_full_scale():
 
 @pytest.mark.skip(reason="C++ parser crashes with access violation on some files - needs native debugging")
 def test_get_architecture_multi_language():
-    """Test with Python AND C++ files - like real Codeine."""
+    """Test with Python AND C++ files - like real Reter Code."""
     reasoner = Reter("ai")
 
-    base = Path("D:/ROOT/codeine_root")
+    base = Path("D:/ROOT/reter_root")
 
     # Python files
     py_count = 0
-    for py_file in (base / "codeine" / "src").rglob("*.py"):
+    for py_file in (base / "reter_code" / "src").rglob("*.py"):
         if "__pycache__" in str(py_file):
             continue
         try:
@@ -232,7 +232,7 @@ def test_get_architecture_multi_language():
     print(f"Loaded {cpp_count} C++ files")
     print(f"Total: {py_count + cpp_count} files")
 
-    # Query with oo: prefix (language-agnostic like Codeine)
+    # Query with oo: prefix (language-agnostic like Reter Code)
     query = """
     SELECT ?file (COUNT(?class) AS ?class_count) (COUNT(?func) AS ?function_count) (COUNT(?import) AS ?import_count)
     WHERE {
@@ -255,19 +255,19 @@ def test_get_architecture_multi_language():
     print("SUCCESS - NO CRASH!")
 
 
-def test_get_architecture_from_codeine_snapshot():
-    """Load the actual Codeine snapshot and run get_architecture query.
+def test_get_architecture_from_reter_code_snapshot():
+    """Load the actual Reter Code snapshot and run get_architecture query.
 
     This is the most accurate reproduction of the crash scenario.
     """
-    snapshot_path = Path("D:/ROOT/codeine_root/.codeine/.default.reter")
+    snapshot_path = Path("D:/ROOT/reter_root/.reter_code/.default.reter")
 
     if not snapshot_path.exists():
         pytest.skip(f"Snapshot not found: {snapshot_path}")
 
     reasoner = Reter("ai")
 
-    print(f"\nLoading Codeine snapshot from {snapshot_path}...")
+    print(f"\nLoading Reter Code snapshot from {snapshot_path}...")
     start = time.time()
     # Use the raw network's load method (exposed from C++ bindings)
     success = reasoner.network.load(str(snapshot_path))
@@ -290,7 +290,7 @@ def test_get_architecture_from_codeine_snapshot():
     ORDER BY ?file
     """
 
-    print("\nRunning get_architecture query on Codeine snapshot...")
+    print("\nRunning get_architecture query on Reter Code snapshot...")
     print("This should reproduce the crash if it's in RETER!")
 
     start = time.time()
@@ -303,14 +303,14 @@ def test_get_architecture_from_codeine_snapshot():
 
 def test_get_architecture_snapshot_with_timeout():
     """Same as above but with timeout_ms > 0 (uses different code path)."""
-    snapshot_path = Path("D:/ROOT/codeine_root/.codeine/.default.reter")
+    snapshot_path = Path("D:/ROOT/reter_root/.reter_code/.default.reter")
 
     if not snapshot_path.exists():
         pytest.skip(f"Snapshot not found: {snapshot_path}")
 
     reasoner = Reter("ai")
 
-    print(f"\nLoading Codeine snapshot...")
+    print(f"\nLoading Reter Code snapshot...")
     success = reasoner.network.load(str(snapshot_path))
     if not success:
         pytest.fail(f"Failed to load snapshot from {snapshot_path}")

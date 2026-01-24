@@ -7,15 +7,15 @@ The `graph_traverse` operator in CADSL pipelines returns the entire graph instea
 **Medium** - Diagrams are generated but contain unnecessary nodes, making them too large to be useful.
 
 ## Affected Components
-- `codeine/src/codeine/dsl/arrow_pipeline.py` - ArrowGraphTraverseStep
-- `codeine/src/codeine/cadsl/tools/diagrams/call_graph.cadsl`
+- `reter_code/src/reter_code/dsl/arrow_pipeline.py` - ArrowGraphTraverseStep
+- `reter_code/src/reter_code/cadsl/tools/diagrams/call_graph.cadsl`
 
 ## Reproduction
 
 ### Test Case
 ```python
 # Using the call_graph CADSL tool
-from codeine.cadsl.tools_bridge import execute_tool
+from reter_code.cadsl.tools_bridge import execute_tool
 
 result = execute_tool("call_graph", {
     "target": "owl_rete::JoinReorderer::reorder_type_last",

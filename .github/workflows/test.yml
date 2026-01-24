@@ -22,7 +22,7 @@ jobs:
       - name: Install reter
         run: |
           uv venv --python ${{ matrix.python }}
-          uv pip install git+https://github.com/codeine-ai/reter.git --find-links https://raw.githubusercontent.com/codeine-ai/reter/main/reter_core/index.html
+          uv pip install git+https://github.com/reter-ai/reter.git --find-links https://raw.githubusercontent.com/reter-ai/reter/main/reter_core/index.html
 
       - name: Run tests
         shell: bash

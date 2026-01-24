@@ -40,7 +40,7 @@ df = results.to_pandas()
 
 ```bash
 pip install reter
-pip install reter_core --extra-index-url https://codeine-ai.github.io/reter/reter_core/
+pip install reter_core --extra-index-url https://reter-ai.github.io/reter/reter_core/
 ```
 
 ## Supported Platforms

@@ -8,7 +8,7 @@ from reter import Reter
 
 transformer_path = os.path.join(
     os.path.dirname(__file__),
-    "..", "..", "codeine", "src", "codeine", "cadsl", "transformer.py"
+    "..", "..", "reter_code", "src", "reter_code", "cadsl", "transformer.py"
 )
 
 print(f"Parsing: {transformer_path}")

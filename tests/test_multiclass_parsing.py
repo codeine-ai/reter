@@ -231,7 +231,7 @@ class TestTransformerFileParsing(unittest.TestCase):
         """Test that RenderChartStep is not nested under RenderTableStep."""
         transformer_path = os.path.join(
             os.path.dirname(__file__),
-            "..", "..", "codeine", "src", "codeine", "cadsl", "transformer.py"
+            "..", "..", "reter_code", "src", "reter_code", "cadsl", "transformer.py"
         )
 
         if not os.path.exists(transformer_path):
@@ -270,7 +270,7 @@ class TestTransformerFileParsing(unittest.TestCase):
         """Test that __init__ methods have correct parameter counts."""
         transformer_path = os.path.join(
             os.path.dirname(__file__),
-            "..", "..", "codeine", "src", "codeine", "cadsl", "transformer.py"
+            "..", "..", "reter_code", "src", "reter_code", "cadsl", "transformer.py"
         )
 
         if not os.path.exists(transformer_path):

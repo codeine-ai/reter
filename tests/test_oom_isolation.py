@@ -4,7 +4,7 @@ from reter import Reter
 
 def test_cpp_duplicates_detail():
     """Show detailed info about C++ duplicates."""
-    snapshot_path = r"D:\ROOT\codeine_root\.codeine\.default.reter"
+    snapshot_path = r"D:\ROOT\reter_root\.reter_code\.default.reter"
 
     reasoner = Reter()
     success = reasoner.network.load(snapshot_path)
