@@ -1089,6 +1089,77 @@ class Reter:
 
         return total_wmes
 
+    def load_html_code(self, html_code, in_file="page.html", progress_callback=None):
+        """Parse HTML source code and extract semantic facts
+
+        Args:
+            html_code: HTML source code as string
+            in_file: File name for the code (used in facts)
+            progress_callback: Optional callback function(items_processed, total_items, message)
+
+        Returns:
+            Number of WMEs added from the HTML code
+        """
+        try:
+            from reter_core import owl_rete_cpp
+            wme_count = owl_rete_cpp.load_html_from_string(
+                self.network,
+                html_code,
+                in_file,
+                progress_callback=progress_callback
+            )
+            return wme_count
+        except Exception as e:
+            raise RuntimeError(f"Failed to load HTML code: {e}")
+
+    def load_html_file(self, filepath, in_file=None, progress_callback=None):
+        """Load HTML file and extract facts
+
+        Args:
+            filepath: Path to HTML file
+            in_file: Optional file name for facts (uses filename if not provided)
+            progress_callback: Optional callback function(items_processed, total_items, message)
+
+        Returns:
+            Number of WMEs added from the HTML file
+        """
+        import os
+        with open(filepath, 'r', encoding='utf-8') as f:
+            code = f.read()
+
+        if in_file is None:
+            in_file = os.path.basename(filepath)
+
+        return self.load_html_code(code, in_file, progress_callback)
+
+    def load_html_directory(self, directory, recursive=True):
+        """Load all HTML files from a directory
+
+        Args:
+            directory: Directory path
+            recursive: Whether to search subdirectories
+
+        Returns:
+            Total number of WMEs added
+        """
+        import os
+        total_wmes = 0
+
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file.endswith(('.html', '.htm')):
+                    filepath = os.path.join(root, file)
+                    try:
+                        wmes = self.load_html_file(filepath)
+                        total_wmes += wmes
+                    except Exception as e:
+                        pass
+
+            if not recursive:
+                break
+
+        return total_wmes
+
     def add_fact(self, fact_dict, source=None):
         """
         Add a single fact using a dictionary specification.
