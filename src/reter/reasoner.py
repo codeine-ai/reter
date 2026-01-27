@@ -32,6 +32,9 @@ class QueryResultSet:
     - Indexed access: results[0], results[-1]
     - Slicing: results[5:10], results[:100]
     - Efficient caching of materialized results
+
+    @reter: CoreLayer(self)
+    @reter: DataTransferObject(self)
     """
 
     def __init__(self, production, variables, network, tokens=None):
@@ -510,6 +513,10 @@ class Reter:
     """
     Main Description Logic Reasoner
     Uses C++ DL parser and C++ OWL RETE reasoning engine directly
+
+    @reter: CoreLayer(self)
+    @reter: DescriptionLogicReasoner(self)
+    @reter: dependsOn(self, reter_core.owl_rete_cpp.ReteNetwork)
     """
 
     # Expose C++ compilation flags
