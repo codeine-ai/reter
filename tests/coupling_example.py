@@ -5,8 +5,8 @@ class DataStore:
     """
     Handles data persistence.
 
-    @reter: TestLayer(self)
-    @reter: Fixture(self)
+    @reter-cnl: This is-in-layer Test-Layer.
+    @reter-cnl: This is a fixture.
     """
 
     def save(self, data):

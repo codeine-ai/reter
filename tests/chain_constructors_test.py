@@ -5,8 +5,8 @@ class SimpleClass:
     """
     Simple class - should not be flagged.
 
-    @reter: TestLayer(self)
-    @reter: Fixture(self)
+    @reter-cnl: This is-in-layer Test-Layer.
+    @reter-cnl: This is a fixture.
     """
 
     def __init__(self, name):

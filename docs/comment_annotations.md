@@ -2,8 +2,8 @@
 
 RETER supports extracting semantic facts from specially formatted comments in your code. Two syntax styles are available:
 
-1. **Predicate syntax** (`@reter:`) - Compact, programmatic style
-2. **CNL syntax** (`@reter-cnl:`) - Natural language style using Controlled Natural Language
+1. **CNL syntax** (`@reter-cnl:`) - **PREFERRED** - Natural language style using Controlled Natural Language
+2. **Predicate syntax** (`@reter:`) - **DEPRECATED** - Compact, programmatic style (still supported for backwards compatibility)
 
 This allows you to add architectural metadata, dependency information, and custom semantic relationships directly in your source code.
 
@@ -11,66 +11,34 @@ This allows you to add architectural metadata, dependency information, and custo
 
 Comment annotations let you define semantic facts that become queryable alongside the automatically extracted code structure. This is useful for:
 
-- Documenting architectural layers (Presentation, Business, Data Access)
+- Documenting architectural layers (Presentation, Service, Infrastructure)
 - Explicitly declaring dependencies between components
-- Marking code with custom concepts (CriticalPath, SecuritySensitive, etc.)
+- Marking code with custom concepts (critical-path, security-sensitive, etc.)
 - Adding metadata that can't be inferred from code structure
 
 ---
 
-## Syntax 1: Predicate Annotations (`@reter:`)
+## CNL Annotations (`@reter-cnl:`) - PREFERRED
+
+CNL (Controlled Natural Language) provides a readable, English-like syntax for semantic annotations.
 
 ### Basic Format
 
 ```
-@reter: Predicate(Argument1, Argument2, ...)
+@reter-cnl: This is-in-layer Service-Layer.
+@reter-cnl: This is a repository.
+@reter-cnl: This depends-on `services.PaymentService`.
 ```
 
-### Three Types of Annotations
+### Key Rules
 
-| Type | Syntax | Description |
-|------|--------|-------------|
-| **Concept** | `@reter: Concept(Individual)` | Asserts that an entity belongs to a concept/class |
-| **Object Role** | `@reter: role(Subject, Object)` | Relates two entities |
-| **Data Role** | `@reter: role(Subject, "literal")` | Relates an entity to a literal value |
-
-### Special References
-
-- `self`, `this`, `.` - Resolved to the current class or method being documented
-
-### Supported Prefixes
-
-All of these work identically:
-- `@reter:`
-- `#reter:`
-- `reter:`
-- `@semantic:`
-- `@owl:`
-- `@fact:`
-
----
-
-## Syntax 2: CNL Annotations (`@reter-cnl:`)
-
-CNL (Controlled Natural Language) provides a more readable, English-like syntax for semantic annotations.
-
-### Basic Format
-
-```
-@reter-cnl: This is part-of Business-Layer.
-@reter-cnl: This depends-on Payment-Service.
-@reter-cnl: Every Order must have-status.
-```
-
-### Key Features
-
+- **Layers** use relations: `This is-in-layer <Layer-Name>.` (hyphenated, Title-Case)
+- **Components** use concept assertions: `This is a <concept>.` (lowercase)
+- **Relations** use predicates: `This depends-on <Target>.`
 - **`This`** is automatically resolved to the current class/method as a fully qualified name
-  - `services.OrderService` → `` `services.OrderService` ``
-  - This allows CNL annotation facts to be joined with extracted code facts
 - Use **backticks** for qualified names: `` `module.ClassName` ``
-- Use **Title-Case** for simple names: `Order-Service`, `Payment-Service`
 - Sentences end with `.` or `?`
-- Full OWL 2 RL expressivity
+- No acronyms - use full words (e.g., `Domain-Specific-Language-Layer` not `DSL-Layer`)
 
 ### Supported Prefixes
 
@@ -82,33 +50,54 @@ CNL (Controlled Natural Language) provides a more readable, English-like syntax 
 
 | Pattern | Example | Meaning |
 |---------|---------|---------|
-| **Concept assertion** | `This is a Service.` | Class membership |
+| **Layer relation** | `This is-in-layer Service-Layer.` | Architectural layer |
+| **Concept assertion** | `This is a repository.` | Functional role |
 | **Role assertion** | `This depends-on Payment-Service.` | Object property |
-| **Data property** | `This has-version equal-to '1.0'.` | Data value |
-| **Subsumption** | `Every Controller is a Component.` | Class hierarchy |
-| **Restriction** | `Every Service must have-logger.` | Existential restriction |
-| **Cardinality** | `Every Order has at-most 1 status.` | Cardinality constraint |
+| **Data property** | `This has-version "1.0".` | Data value |
+| **Subsumption** | `Every controller is a component.` | Class hierarchy |
+| **Restriction** | `Every service must have-logger.` | Existential restriction |
 
-### CNL vs Predicate Comparison
+### Architectural Layers
 
-| Predicate Syntax | CNL Syntax |
-|------------------|------------|
-| `@reter: BusinessLayer(self)` | `@reter-cnl: This is a business-layer.` |
-| `@reter: dependsOn(self, services.PaymentService)` | ``@reter-cnl: This depends-on `services.PaymentService`.`` |
-| `@reter: hasOwner(self, "Team A")` | `@reter-cnl: This has-owner equal-to 'Team A'.` |
-| `@reter: implements(self, IService)` | ``@reter-cnl: This implements `interfaces.IService`.`` |
+| Layer | CNL Name |
+|-------|----------|
+| Presentation | `Presentation-Layer` |
+| Service | `Service-Layer` |
+| Domain-Specific-Language | `Domain-Specific-Language-Layer` |
+| Infrastructure | `Infrastructure-Layer` |
+| Core | `Core-Layer` |
+| Test | `Test-Layer` |
+| Utility | `Utility-Layer` |
 
-### CNL Examples by Language
+### Functional Components (Concepts)
 
-#### Python
+| Component | CNL Concept |
+|-----------|-------------|
+| Repository | `repository` |
+| Service | `service` |
+| Handler | `handler` |
+| Manager | `manager` |
+| Parser | `parser` |
+| Compiler | `compiler` |
+| Value-Object | `value-object` |
+| Factory | `factory` |
+| Builder | `builder` |
+
+---
+
+## Language Examples (CNL)
+
+### Python
+
 ```python
 class OrderService:
     """
     Handles order processing.
 
-    @reter-cnl: This is-part-of `layers.BusinessLayer`.
+    @reter-cnl: This is-in-layer Service-Layer.
+    @reter-cnl: This is a service.
     @reter-cnl: This depends-on `services.PaymentService`.
-    @reter-cnl: This has-owner equal-to 'Team A'.
+    @reter-cnl: This has-owner "Team A".
     """
 
     def process_order(self, order):
@@ -118,90 +107,18 @@ class OrderService:
         pass
 ```
 
-#### JavaScript
-```javascript
-/**
- * Authentication service.
- * @reter-cnl: This is part-of Security-Layer.
- * @reter-cnl: This depends-on Token-Store.
- */
-class AuthService {
-    /**
-     * @reter-cnl: This is a Critical-Path.
-     */
-    login(credentials) {
-        // ...
-    }
-}
-```
-
-#### C#
-```csharp
-/// <summary>
-/// Order repository.
-/// @reter-cnl: This is part-of Data-Access-Layer.
-/// @reter-cnl: This implements I-Order-Repository.
-/// </summary>
-public class OrderRepository
-{
-    /// @reter-cnl: This is a Database-Operation.
-    public void Save(Order order) { }
-}
-```
-
-#### C++
-```cpp
-/**
- * Memory pool allocator.
- * @reter-cnl: This is part-of Infrastructure-Layer.
- * @reter-cnl: This has-complexity equal-to 'O(1)'.
- */
-class MemoryPool {
-public:
-    // @reter-cnl: This is Performance-Critical.
-    void* allocate(size_t size);
-};
-```
-
----
-
-## Language Support
-
-### Python
-
-Use docstrings with `@reter:` annotations:
-
-```python
-class OrderService:
-    """
-    Handles order processing.
-
-    @reter: BusinessLayer(self)
-    @reter: dependsOn(self, services.PaymentService)
-    @reter: hasOwner(self, "Team A")
-    """
-
-    def process_order(self, order):
-        """
-        @reter: UseCase(self)
-        @reter: calls(self, services.PaymentService.charge)
-        """
-        pass
-```
-
 ### JavaScript / TypeScript
 
-Use JSDoc comments:
-
 ```javascript
 /**
  * Authentication service.
- * @reter: SecurityLayer(AuthService)
- * @reter: dependsOn(AuthService, TokenStore)
+ * @reter-cnl: This is-in-layer Service-Layer.
+ * @reter-cnl: This is a handler.
+ * @reter-cnl: This depends-on `TokenStore`.
  */
 class AuthService {
     /**
-     * @reter: CriticalPath(login)
+     * @reter-cnl: This is a critical-path.
      */
     login(credentials) {
         // ...
@@ -211,57 +128,147 @@ class AuthService {
 
 ### C#
 
-Use XML documentation comments or regular comments:
-
 ```csharp
 /// <summary>
 /// Order repository.
-/// @reter: DataAccessLayer(OrderRepository)
-/// @reter: implements(OrderRepository, IOrderRepository)
+/// @reter-cnl: This is-in-layer Infrastructure-Layer.
+/// @reter-cnl: This is a repository.
+/// @reter-cnl: This implements `IOrderRepository`.
 /// </summary>
 public class OrderRepository
 {
-    /// @reter: DatabaseOperation(Save)
+    /// @reter-cnl: This is a database-operation.
     public void Save(Order order) { }
 }
 ```
 
 ### C++
 
-Use block comments or line comments:
-
 ```cpp
 /**
  * Memory pool allocator.
- * @reter: InfrastructureLayer(MemoryPool)
- * @reter: hasComplexity(MemoryPool, "O(1)")
+ * @reter-cnl: This is-in-layer Core-Layer.
+ * @reter-cnl: This is a manager.
+ * @reter-cnl: This has-complexity "O(1)".
  */
 class MemoryPool {
 public:
-    // @reter: PerformanceCritical(allocate)
+    // @reter-cnl: This is a performance-critical.
     void* allocate(size_t size);
 };
 ```
 
 ### HTML
 
-Use HTML comments:
-
 ```html
 <!DOCTYPE html>
-<!-- @reter: WebPage(HomePage) -->
-<!-- @reter: belongsTo(HomePage, MarketingSite) -->
+<!-- @reter-cnl: This is a web-page. -->
+<!-- @reter-cnl: This belongs-to Marketing-Site. -->
 <html>
 <head>
-    <!-- @reter: hasAuthor(HomePage, "Design Team") -->
+    <!-- @reter-cnl: This has-author "Design Team". -->
     <title>Home</title>
 </head>
 <body>
-    <!-- @reter: UIComponent(MainContent) -->
+    <!-- @reter-cnl: This is a user-interface-component. -->
     <main id="content">...</main>
 </body>
 </html>
 ```
+
+---
+
+## Common Use Cases
+
+### Architectural Layers
+
+```python
+class UserController:
+    """
+    @reter-cnl: This is-in-layer Presentation-Layer.
+    @reter-cnl: This is a controller.
+    """
+
+class UserService:
+    """
+    @reter-cnl: This is-in-layer Service-Layer.
+    @reter-cnl: This is a service.
+    @reter-cnl: This depends-on `app.repositories.UserRepository`.
+    """
+
+class UserRepository:
+    """
+    @reter-cnl: This is-in-layer Infrastructure-Layer.
+    @reter-cnl: This is a repository.
+    """
+```
+
+### Security Annotations
+
+```python
+class AuthService:
+    """
+    @reter-cnl: This is a security-critical.
+    @reter-cnl: This requires-audit "true".
+    """
+
+    def validate_token(self, token):
+        """
+        @reter-cnl: This is a security-sensitive.
+        @reter-cnl: This handles-credentials "JSON-Web-Token".
+        """
+```
+
+### Domain-Driven Design
+
+```python
+class Order:
+    """
+    @reter-cnl: This is a aggregate-root.
+    @reter-cnl: This is-in-bounded-context Order-Management.
+    """
+
+class OrderLine:
+    """
+    @reter-cnl: This is a entity.
+    @reter-cnl: This is-part-of `domain.Order`.
+    """
+
+class OrderPlaced:
+    """
+    @reter-cnl: This is a domain-event.
+    @reter-cnl: This is-raised-by `domain.Order`.
+    """
+```
+
+### Design Patterns
+
+```python
+class ConfigManager:
+    """
+    @reter-cnl: This is a singleton.
+    """
+
+class VehicleFactory:
+    """
+    @reter-cnl: This is a factory.
+    @reter-cnl: This creates `domain.Vehicle`.
+    """
+```
+
+### Cross-File Dependencies
+
+```python
+# file: services/order_service.py
+class OrderService:
+    """
+    @reter-cnl: This depends-on `services.payment.PaymentGateway`.
+    @reter-cnl: This depends-on `services.inventory.StockService`.
+    @reter-cnl: This publishes `events.OrderCreated`.
+    """
+```
+
+---
 
 ## Querying Annotations
 
@@ -273,13 +280,13 @@ from reter import Reter
 r = Reter()
 r.load_python_code(code, 'services.py')
 
-# Find all BusinessLayer classes
-results = r.pattern(('?class', 'type', 'user:BusinessLayer')).to_list()
+# Find all Service-Layer classes
+results = r.pattern(('?class', 'is-in-layer', 'Service-Layer')).to_list()
 for result in results:
     print(result['?class'])
 
 # Find dependencies
-deps = r.pattern(('?source', 'dependsOn', '?target')).to_list()
+deps = r.pattern(('?source', 'depends-on', '?target')).to_list()
 for dep in deps:
     print(f"{dep['?source']} depends on {dep['?target']}")
 ```
@@ -287,203 +294,80 @@ for dep in deps:
 ### REQL Queries
 
 ```python
-# Find classes in BusinessLayer
-results = r.reql('SELECT ?c WHERE { ?c type user:BusinessLayer }')
+# Find classes in Service-Layer
+results = r.reql('SELECT ?c WHERE { ?c is-in-layer Service-Layer }')
 classes = results[0].to_pylist()
 
-# Find what BusinessLayer depends on
+# Find what Service-Layer depends on
 results = r.reql('''
     SELECT ?source ?target WHERE {
-        ?source type user:BusinessLayer .
-        ?source dependsOn ?target
-    }
-''')
-
-# Join with code structure - find BusinessLayer classes with their methods
-results = r.reql('''
-    SELECT ?class ?method WHERE {
-        ?class type user:BusinessLayer .
-        ?class type py:Class .
-        ?method definedIn ?class .
-        ?method type py:Method
+        ?source is-in-layer Service-Layer .
+        ?source depends-on ?target
     }
 ''')
 ```
 
-## Reference Naming
+---
 
-### Qualified Names
+## Predicate Annotations (`@reter:`) - DEPRECATED
 
-For annotations to join properly with extracted code facts, use **fully qualified names**:
+> **Note:** This syntax is deprecated. Use `@reter-cnl:` instead.
 
-```python
-# Module: services.py
+The predicate syntax is still supported for backwards compatibility.
 
-class PaymentService:
-    pass
+### Basic Format
 
-class OrderService:
-    """
-    # Use qualified name to match the extracted class
-    @reter: dependsOn(self, services.PaymentService)
-    """
-    pass
+```
+@reter: Predicate(Argument1, Argument2, ...)
 ```
 
-The extractor creates class individuals like `services.PaymentService`, so your annotation references should match this format.
+### Three Types
 
-### Using `self`
+| Type | Syntax | Description |
+|------|--------|-------------|
+| **Concept** | `@reter: Concept(Individual)` | Asserts that an entity belongs to a concept/class |
+| **Object Role** | `@reter: role(Subject, Object)` | Relates two entities |
+| **Data Role** | `@reter: role(Subject, "literal")` | Relates an entity to a literal value |
 
-The `self` reference is automatically resolved to the qualified name:
+### Supported Prefixes
 
-```python
-# In services.py
-class OrderService:
-    """
-    @reter: BusinessLayer(self)
-    # Equivalent to: @reter: BusinessLayer(services.OrderService)
-    """
-```
+- `@reter:`
+- `#reter:`
+- `reter:`
+- `@semantic:`
+- `@owl:`
+- `@fact:`
 
-## Common Use Cases
+### Migration to CNL
 
-### Architectural Layers
+| Deprecated Predicate Syntax | Preferred CNL Syntax |
+|----------------------------|----------------------|
+| `@reter: ServiceLayer(self)` | `@reter-cnl: This is-in-layer Service-Layer.` |
+| `@reter: Repository(self)` | `@reter-cnl: This is a repository.` |
+| `@reter: dependsOn(self, services.X)` | ``@reter-cnl: This depends-on `services.X`.`` |
+| `@reter: hasOwner(self, "Team A")` | `@reter-cnl: This has-owner "Team A".` |
 
-```python
-class UserController:
-    """
-    @reter: PresentationLayer(self)
-    """
+---
 
-class UserService:
-    """
-    @reter: BusinessLayer(self)
-    @reter: dependsOn(self, app.repositories.UserRepository)
-    """
+## Best Practices
 
-class UserRepository:
-    """
-    @reter: DataAccessLayer(self)
-    """
-```
-
-Query layer violations:
-```python
-# Find if Presentation layer directly accesses Data layer
-results = r.reql('''
-    SELECT ?presentation ?data WHERE {
-        ?presentation type user:PresentationLayer .
-        ?data type user:DataAccessLayer .
-        ?presentation dependsOn ?data
-    }
-''')
-```
-
-### Security Annotations
-
-```python
-class AuthService:
-    """
-    @reter: SecurityCritical(self)
-    @reter: requiresAudit(self, "true")
-    """
-
-    def validate_token(self, token):
-        """
-        @reter: SecuritySensitive(self)
-        @reter: handlesCredentials(self, "JWT")
-        """
-```
-
-### Domain-Driven Design
-
-```python
-class Order:
-    """
-    @reter: AggregateRoot(self)
-    @reter: inBoundedContext(self, OrderManagement)
-    """
-
-class OrderLine:
-    """
-    @reter: Entity(self)
-    @reter: partOf(self, domain.Order)
-    """
-
-class OrderPlaced:
-    """
-    @reter: DomainEvent(self)
-    @reter: raisedBy(self, domain.Order)
-    """
-```
-
-### Cross-File Dependencies
-
-```python
-# file: services/order_service.py
-class OrderService:
-    """
-    @reter: dependsOn(self, services.payment.PaymentGateway)
-    @reter: dependsOn(self, services.inventory.StockService)
-    @reter: publishes(self, events.OrderCreated)
-    """
-```
-
-## Annotation Attributes
-
-You can add key-value attributes to concept assertions:
-
-```python
-class CacheManager:
-    """
-    @reter: CriticalComponent(self, priority=high, team=infrastructure)
-    """
-```
-
-These become additional attributes on the generated fact.
+1. **Use `@reter-cnl:`** - The CNL syntax is preferred and more readable
+2. **Use qualified names** for cross-file references with backticks
+3. **Use `This`** for the current class/method to avoid duplication
+4. **Be consistent** with naming conventions across your codebase
+5. **No acronyms** - Use `Domain-Specific-Language-Layer` not `DSL-Layer`
+6. **Lowercase concepts** - Use `This is a repository.` not `This is a Repository.`
 
 ## Fact Types Generated
 
 | Annotation Type | Generated Fact Type | Key Attributes |
 |-----------------|---------------------|----------------|
-| Concept | `instance_of` | `individual`, `concept` |
+| Layer relation | `role_assertion` | `subject`, `role`, `object` |
+| Concept assertion | `instance_of` | `individual`, `concept` |
 | Object Role | `role_assertion` | `subject`, `role`, `object` |
-| Data Role | `role_assertion` | `subject`, `role`, `object`, `value`, `datatype` |
+| Data Role | `role_assertion` | `subject`, `role`, `value`, `datatype` |
 
 All facts include:
 - `inFile` - Source file path
 - `atLine` - Line number
-- `source` - Always `"comment_annotation"`
-
-## Best Practices
-
-1. **Use qualified names** for cross-file references to ensure proper joins
-2. **Use `self`** for the current class/method to avoid duplication
-3. **Be consistent** with naming conventions across your codebase
-4. **Document your custom concepts** so team members understand the ontology
-5. **Query your annotations** to validate architectural rules in CI/CD
-
-## Example: Complete Workflow
-
-```python
-from reter import Reter
-
-# Load your codebase
-r = Reter()
-r.load_python_directory('src/', recursive=True)
-
-# Find architectural violations
-violations = r.reql('''
-    SELECT ?controller ?repo WHERE {
-        ?controller type user:PresentationLayer .
-        ?repo type user:DataAccessLayer .
-        ?controller calls ?method .
-        ?method definedIn ?repo
-    }
-''')
-
-if violations[0].to_pylist():
-    print("Warning: Controllers directly accessing repositories!")
-    for ctrl, repo in zip(violations[0].to_pylist(), violations[1].to_pylist()):
-        print(f"  {ctrl} -> {repo}")
-```
+- `source` - `"cnl_annotation"` or `"comment_annotation"`
