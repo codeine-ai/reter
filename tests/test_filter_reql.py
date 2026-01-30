@@ -59,7 +59,8 @@ class OtherClass:
     # Test: Find methods with "initialize" in name
     result = reter.reql("""
         SELECT ?methodName WHERE {
-            ?method name ?methodName .
+            ?method type method .
+            ?method has-name ?methodName .
             FILTER(CONTAINS(?methodName, "initialize"))
         }
     """)
@@ -91,8 +92,9 @@ def test_cleanup():
     # Test: Find test functions (starting with "test_")
     result = reter.reql("""
         SELECT ?name WHERE {
-            ?func inModule ?module .
-            ?func name ?name .
+            ?func type function .
+            ?func is-in-module ?module .
+            ?func has-name ?name .
             FILTER(REGEX(?name, "^test_"))
         }
     """)
@@ -216,8 +218,9 @@ def test_process():
     # If not available, adjust test accordingly
     result = reter.reql("""
         SELECT ?name WHERE {
-            ?func inModule ?module .
-            ?func name ?name .
+            ?func type function .
+            ?func is-in-module ?module .
+            ?func has-name ?name .
             FILTER(REGEX(?name, "^test_"))
         }
     """)
@@ -253,12 +256,12 @@ class OtherClass:
 """, "helpdesk_agent")
 
     # Original Session 2 query (now using direct calls relation!)
-    # Note: Use hasMethod from class side (inClass doesn't exist)
+    # Note: Use has-method from class side (is-defined-in is the reverse)
     result = reter.reql("""
         SELECT ?method ?callee WHERE {
-            ?class type py:Class .
-            ?class name "FSAAgentManager" .
-            ?class hasMethod ?method .
+            ?class type class .
+            ?class has-name "FSAAgentManager" .
+            ?class has-method ?method .
             ?method calls ?callee
         }
     """)
@@ -310,8 +313,8 @@ class MyClass:
     # Test: Find dunder methods (starting with "__")
     result = reter.reql("""
         SELECT ?name WHERE {
-            ?method concept "py:Method" .
-            ?method name ?name .
+            ?method type method .
+            ?method has-name ?name .
             FILTER(STRSTARTS(?name, "__"))
         }
     """)
@@ -349,8 +352,8 @@ class MyClass:
     # Test: Find dunder methods (ending with "__")
     result = reter.reql("""
         SELECT ?name WHERE {
-            ?method concept "py:Method" .
-            ?method name ?name .
+            ?method type method .
+            ?method has-name ?name .
             FILTER(STRENDS(?name, "__"))
         }
     """)
@@ -394,8 +397,8 @@ class MyClass:
     # Test: Find dunder methods (starting AND ending with "__")
     result = reter.reql("""
         SELECT ?name WHERE {
-            ?method concept "py:Method" .
-            ?method name ?name .
+            ?method type method .
+            ?method has-name ?name .
             FILTER(STRSTARTS(?name, "__") && STRENDS(?name, "__"))
         }
     """)
@@ -440,8 +443,8 @@ class MyClass:
     # Test: Find public methods (NOT starting with "_")
     result = reter.reql("""
         SELECT ?name WHERE {
-            ?method concept "py:Method" .
-            ?method name ?name .
+            ?method type method .
+            ?method has-name ?name .
             FILTER(!STRSTARTS(?name, "_"))
         }
     """)

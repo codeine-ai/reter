@@ -213,7 +213,11 @@ def test_reql_with_order_by():
 
 
 def test_reql_with_distinct():
-    """Test SPARQL query with DISTINCT"""
+    """Test SPARQL query with DISTINCT
+
+    Note: REQL has implicit DISTINCT semantics - results are always deduplicated
+    after projection. The DISTINCT keyword is accepted but has no additional effect.
+    """
     r = Reter()
 
     # Load sample ontology with duplicate values
@@ -228,7 +232,7 @@ def test_reql_with_distinct():
     """
     r.load_ontology(ontology)
 
-    # Test SPARQL without DISTINCT
+    # Test SPARQL without DISTINCT - implicit distinct after projection
     query_no_distinct = """
     SELECT ?city
     WHERE {
@@ -241,10 +245,11 @@ def test_reql_with_distinct():
     # Convert Arrow Table to list of dicts
     results_list = results.to_pylist() if hasattr(results, 'to_pylist') else []
     cities = [r["?city"] for r in results_list] if results_list else []
-    assert len(cities) == 3  # NYC, NYC, LA
-    print(f"✓ SPARQL without DISTINCT returned {len(cities)} results")
+    # REQL has implicit DISTINCT - returns unique cities only (NYC, LA)
+    assert len(cities) == 2, f"Expected 2 unique cities (implicit distinct), got {len(cities)}"
+    print(f"✓ SPARQL without DISTINCT returned {len(cities)} results (implicit distinct)")
 
-    # Test SPARQL with DISTINCT
+    # Test SPARQL with DISTINCT - same result due to implicit distinct
     query_distinct = """
     SELECT DISTINCT ?city
     WHERE {
@@ -259,6 +264,7 @@ def test_reql_with_distinct():
     cities = [r["?city"] for r in results_list] if results_list else []
     unique_cities = list(set(cities))
     assert len(cities) == len(unique_cities)  # Should be 2 (NYC, LA)
+    assert len(cities) == 2, f"Expected 2 unique cities, got {len(cities)}"
     print(f"✓ SPARQL with DISTINCT returned {len(cities)} unique results")
 
 

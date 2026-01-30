@@ -153,8 +153,8 @@ def test_example_2_1_find_all_classes(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?class ?name
         WHERE {
-            ?class type py:Class .
-            ?class name ?name
+            ?class type class .
+            ?class has-name ?name
         }
     """)
 
@@ -166,15 +166,15 @@ def test_example_2_1_find_all_classes(reter_with_comprehensive_code):
 
 def test_example_3_1_find_methods_using_hasmethod(reter_with_comprehensive_code):
     """
-    Example 3.1: Find methods using hasMethod relationship
+    Example 3.1: Find methods using has-method relationship
 
     Documentation: PYTHON_ANALYSIS_REFERENCE.md lines 327-350
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?method
         WHERE {
-            ?class type py:Class .
-            ?class hasMethod ?method
+            ?class type class .
+            ?class has-method ?method
         }
     """)
 
@@ -189,9 +189,9 @@ def test_example_4_1_find_function_parameters(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?param ?name WHERE {
-            ?func type py:Function .
-            ?func hasParameter ?param .
-            ?param name ?name
+            ?func type function .
+            ?func has-parameter ?param .
+            ?param has-name ?name
         }
     """)
 
@@ -277,8 +277,8 @@ def test_example_10_1_find_inheritance(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?class ?base
         WHERE {
-            ?class type py:Class .
-            ?class inheritsFrom ?base
+            ?class type class .
+            ?class inherits-from ?base
         }
     """)
 
@@ -295,7 +295,7 @@ def test_example_11_1_find_decorated_functions(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?func ?decorator
         WHERE {
-            ?func hasDecorator ?decorator
+            ?func has-decorator ?decorator
         }
     """)
 
@@ -312,9 +312,9 @@ def test_example_12_1_find_imports(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?module ?imports
         WHERE {
-            ?import type py:Import .
-            ?import modulePath ?imports .
-            ?import inModule ?module
+            ?import type import .
+            ?import has-module-path ?imports .
+            ?import is-in-module ?module
         }
     """)
 
@@ -331,9 +331,9 @@ def test_example_13_1_find_entities_in_module(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?entity ?type ?name
         WHERE {
-            ?entity inModule "mymodule" .
+            ?entity is-in-module "mymodule" .
             ?entity type ?type .
-            ?entity name ?name
+            ?entity has-name ?name
         }
     """)
 
@@ -349,8 +349,8 @@ def test_example_15_1_find_async_functions(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?func ?name
         WHERE {
-            ?func isAsync "true" .
-            ?func name ?name
+            ?func is-async "true" .
+            ?func has-name ?name
         }
     """)
 
@@ -365,10 +365,10 @@ def test_example_16_1_find_return_types(reter_with_comprehensive_code):
     Documentation: PYTHON_ANALYSIS_REFERENCE.md lines 538-548
     """
     result = reter_with_comprehensive_code.reql("""
-        SELECT ?func ?name ?returnType
+        SELECT ?func ?name ?has-return-type
         WHERE {
-            ?func returnType ?returnType .
-            ?func name ?name
+            ?func has-return-type ?has-return-type .
+            ?func has-name ?name
         }
     """)
 
@@ -385,8 +385,8 @@ def test_example_17_1_find_at_line(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?entity ?name
         WHERE {
-            ?entity atLine "1" .
-            ?entity name ?name
+            ?entity is-at-line "1" .
+            ?entity has-name ?name
         }
     """)
 
@@ -401,8 +401,8 @@ def test_example_18_1_get_all_classes(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?class ?name WHERE {
-            ?class type py:Class .
-            ?class name ?name
+            ?class type class .
+            ?class has-name ?name
         }
     """)
 
@@ -417,7 +417,7 @@ def test_example_18_2_classes_with_docstrings(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT DISTINCT ?class WHERE {
-            ?class hasDocstring ?doc
+            ?class has-docstring ?doc
         }
     """)
 
@@ -433,9 +433,9 @@ def test_example_18_3_classes_without_docstrings(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?class ?name WHERE {
-            ?class type py:Class .
-            ?class name ?name
-            FILTER NOT EXISTS { ?class hasDocstring ?doc }
+            ?class type class .
+            ?class has-name ?name
+            FILTER NOT EXISTS { ?class has-docstring ?doc }
         }
     """)
 
@@ -450,8 +450,8 @@ def test_example_21_1_filter_by_method_type(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?entity ?name WHERE {
-            ?entity type py:Method .
-            ?entity name ?name
+            ?entity type method .
+            ?entity has-name ?name
         }
     """)
 
@@ -466,8 +466,8 @@ def test_example_21_2_filter_by_function_type(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?entity ?name WHERE {
-            ?entity type py:Function .
-            ?entity name ?name
+            ?entity type function .
+            ?entity has-name ?name
         }
     """)
 
@@ -482,8 +482,8 @@ def test_example_22_1_use_module_context(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?method WHERE {
-            ?method inModule "mymodule" .
-            ?method type py:Method
+            ?method is-in-module "mymodule" .
+            ?method type method
         }
     """)
 
@@ -498,8 +498,8 @@ def test_example_23_1_combine_predicates(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?method ?doc WHERE {
-            ?method type py:Method .
-            ?method hasDocstring ?doc
+            ?method type method .
+            ?method has-docstring ?doc
         }
     """)
 
@@ -551,8 +551,8 @@ def test_example_24_1_filter_by_exact_name(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?class ?name
         WHERE {
-            ?class type py:Class .
-            ?class name ?name
+            ?class type class .
+            ?class has-name ?name
             FILTER(?name = "Priority")
         }
     """)
@@ -572,8 +572,8 @@ def test_example_25_1_filter_with_contains(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?method ?name
         WHERE {
-            ?method type py:Method .
-            ?method name ?name
+            ?method type method .
+            ?method has-name ?name
             FILTER(CONTAINS(?name, "get"))
         }
     """)
@@ -591,8 +591,8 @@ def test_example_26_1_filter_with_regex(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?method ?name
         WHERE {
-            ?method type py:Method .
-            ?method name ?name
+            ?method type method .
+            ?method has-name ?name
             FILTER(REGEX(?name, "^test_.*"))
         }
     """)
@@ -610,8 +610,8 @@ def test_example_27_1_filter_with_bound(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?entity ?doc
         WHERE {
-            ?entity type py:Class .
-            ?entity hasDocstring ?doc
+            ?entity type class .
+            ?entity has-docstring ?doc
             FILTER(BOUND(?doc))
         }
     """)
@@ -628,8 +628,8 @@ def test_example_28_1_complex_filter_boolean(reter_with_comprehensive_code):
     result = reter_with_comprehensive_code.reql("""
         SELECT ?method ?name
         WHERE {
-            ?method type py:Method .
-            ?method name ?name
+            ?method type method .
+            ?method has-name ?name
             FILTER(
                 (CONTAINS(?name, "get") || CONTAINS(?name, "set"))
             )
@@ -648,10 +648,10 @@ def test_example_30_1_using_exists(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?class ?name WHERE {
-            ?class type py:Class .
-            ?class name ?name
+            ?class type class .
+            ?class has-name ?name
             FILTER EXISTS {
-                ?class hasMethod ?method
+                ?class has-method ?method
             }
         }
     """)
@@ -668,10 +668,10 @@ def test_example_31_1_using_not_exists(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?class ?name WHERE {
-            ?class type py:Class .
-            ?class name ?name
+            ?class type class .
+            ?class has-name ?name
             FILTER NOT EXISTS {
-                ?class hasMethod ?method
+                ?class has-method ?method
             }
         }
     """)
@@ -831,8 +831,8 @@ def test_example_14_2_aggregate_parameters(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?func COUNT(?param) AS ?paramCount WHERE {
-            ?func type py:Function .
-            ?func hasParameter ?param
+            ?func type function .
+            ?func has-parameter ?param
         }
         GROUP BY ?func
         HAVING (?paramCount > 2)
@@ -850,8 +850,8 @@ def test_example_32_1_count_methods_per_class(reter_with_comprehensive_code):
     """
     result = reter_with_comprehensive_code.reql("""
         SELECT ?class COUNT(?method) AS ?methodCount WHERE {
-            ?class type py:Class .
-            ?class hasMethod ?method
+            ?class type class .
+            ?class has-method ?method
         }
         GROUP BY ?class
         HAVING (?methodCount > 2)
@@ -1161,7 +1161,7 @@ class MyClass(Parent):
         SELECT ?ancestor
         WHERE {
             ?rel individual "mymodule.MyClass" .
-            ?rel inheritsFrom ?ancestor
+            ?rel inherits-from ?ancestor
         }
     """)
 
@@ -1202,7 +1202,7 @@ class AnotherClass:
         WHERE {
             ?rel individual ?method .
             ?rel isConstructor "true" .
-            ?method definedIn ?class
+            ?method is-defined-in ?class
         }
     """)
 
@@ -1283,7 +1283,7 @@ class MyClass:
         WHERE {
             ?rel individual ?prop .
             ?rel isProperty "true" .
-            ?prop definedIn ?class
+            ?prop is-defined-in ?class
         }
     """)
 
@@ -1328,7 +1328,7 @@ class Point:
         WHERE {
             ?rel individual ?class .
             ?rel isDataClass "true" .
-            ?class name ?name
+            ?class has-name ?name
         }
     """)
 
@@ -1369,7 +1369,7 @@ class UndocumentedClass:
             ?rel individual ?class .
             ?rel undocumented "true" .
             ?class concept "py:Class" .
-            ?class name ?name
+            ?class has-name ?name
         }
     """)
 
@@ -1412,7 +1412,7 @@ def main():
         WHERE {
             ?rel individual ?func .
             ?rel potentiallyUnused "true" .
-            ?func name ?name
+            ?func has-name ?name
         }
     """)
 
@@ -1457,7 +1457,7 @@ class ConcreteClass:
         WHERE {
             ?rel individual ?class .
             ?rel isAbstractClass "true" .
-            ?class name ?name
+            ?class has-name ?name
         }
     """)
 
