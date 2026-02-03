@@ -1758,6 +1758,60 @@ class Reter:
     # Source Tracking Methods (Phase 5)
     # ========================================================================
 
+    # ========================================================================
+    # Serialization Methods
+    # High-performance serialization with Cap'n Proto (default) or Protobuf
+    # ========================================================================
+
+    def save(self, filename, format='capnp'):
+        """
+        Save network state to binary file
+
+        Args:
+            filename: Path to output file
+            format: Serialization format - 'capnp' (default) or 'protobuf'
+                   Cap'n Proto uses memory-mapped I/O for better performance.
+
+        Returns:
+            bool: True if successful
+
+        Example:
+            r = Reter()
+            r.load_ontology("...")
+            r.save("snapshot.bin")  # Uses Cap'n Proto (default)
+            r.save("snapshot.pb", format='protobuf')  # Uses Protobuf
+        """
+        if format == 'capnp':
+            return self.network.save_capnp(filename)
+        elif format == 'protobuf':
+            return self.network.save(filename)
+        else:
+            raise ValueError(f"Unknown format: {format}. Use 'capnp' or 'protobuf'.")
+
+    def load(self, filename, format='capnp'):
+        """
+        Load network state from binary file
+
+        Args:
+            filename: Path to input file
+            format: Serialization format - 'capnp' (default) or 'protobuf'
+                   Cap'n Proto uses memory-mapped I/O for zero-copy loading.
+
+        Returns:
+            bool: True if successful
+
+        Example:
+            r = Reter()
+            r.load("snapshot.bin")  # Uses Cap'n Proto (default)
+            r.load("snapshot.pb", format='protobuf')  # Uses Protobuf
+        """
+        if format == 'capnp':
+            return self.network.load_capnp(filename)
+        elif format == 'protobuf':
+            return self.network.load(filename)
+        else:
+            raise ValueError(f"Unknown format: {format}. Use 'capnp' or 'protobuf'.")
+
     def remove_source(self, source_id):
         """
         Remove all facts from a source and all derived facts
